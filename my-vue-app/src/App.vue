@@ -1,26 +1,42 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-</template>
-
-<script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
-</script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+    <div>
+      <h1>Управление книгами</h1>
+      <BookForm @add="addBook" @edit="editBook" :book="editedBook" />
+      <BookList :books="books" @edit="startEdit" @delete="deleteBook" />
+    </div>
+  </template>
+  
+  <script>
+  import { books } from './data.js';
+  import BookForm from './components/BookForm.vue';
+  import BookList from './components/BookList.vue';
+  
+  export default {
+    components: { BookForm, BookList },
+    data() {
+      return {
+        books: books,
+        editedBook: null,
+      };
+    },
+    methods: {
+      addBook(newBook) {
+        newBook.id = this.books.length + 1;
+        this.books.push(newBook);
+      },
+      startEdit(book) {
+        this.editedBook = { ...book };
+      },
+      editBook(editedBook) {
+        const index = this.books.findIndex((book) => book.id === editedBook.id);
+        if (index !== -1) {
+          this.books[index] = editedBook;
+        }
+        this.editedBook = null;
+      },
+      deleteBook(id) {
+        this.books = this.books.filter((book) => book.id !== id);
+      },
+    },
+  };
+  </script>
