@@ -7,7 +7,6 @@
   </template>
   
   <script>
-  import { books } from './data.js';
   import BookForm from './components/BookForm.vue';
   import BookList from './components/BookList.vue';
   
@@ -15,7 +14,7 @@
     components: { BookForm, BookList },
     data() {
       return {
-        books: books,
+        books:[],
         editedBook: null,
       };
     },
@@ -23,7 +22,8 @@
       addBook(newBook) {
         newBook.id = this.books.length + 1;
         this.books.push(newBook);
-      },
+      }, 
+    
       startEdit(book) {
         this.editedBook = { ...book };
       },
@@ -38,5 +38,10 @@
         this.books = this.books.filter((book) => book.id !== id);
       },
     },
+    mounted() {
+      fetch('http://merkushev.vyatgeo.ru/api.php')
+  .then((response) => response.json())
+  .then((json) => {this.books=json});
+  }
   };
   </script>
